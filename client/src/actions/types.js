@@ -1,0 +1,10 @@
+export const GET_ERRORS = "GET_ERRORS";
+export const REQUEST_SUCCEED = 'REQUEST_SUCCEED';
+export const REQUEST_FAILED = 'REQUEST_FAILED';
+export const REQUEST_RESET = 'REQUEST_RESET';
+export const SET_CURRENT_USER = "SET_CURRENT_USER";
+export const FETCH_COURSE_INFO = "FETCH_COURSE_INFO";
+export const ADD_COURSE = 'ADD_COURSE';
+export const ENROLL_COURSE = "ENROLL_COURSE";
+export const DROP_COURSE = "DROP_COURSE";
+export const SET_COURSE = 'SET_COURSE';
