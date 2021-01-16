@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { drop_course, enroll_course, set_course, } from '../../../actions/courseActions.js';
-
+import Search from './Search/Search';
 import './Widgets.css';
+
 
 class MyCourse extends Component
 {
@@ -92,6 +93,8 @@ class MyCourse extends Component
                         </button>
                     </form>
                 </div>
+                
+                <Search/>
             </div>
         );
     }
