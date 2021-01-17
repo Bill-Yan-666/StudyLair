@@ -36,10 +36,17 @@
 {
     height: 230px;
     width: 80%;
+    background-color: #DF0101;
     margin-top: 5%;
     margin-left: 10%;
     border-radius: 5px;
     letter-spacing: 1.5px;
+}
+
+.PopUp-Button:hover
+{
+    background-color: #FA58AC;
+    color: darkred;
 }
 
 .B-card

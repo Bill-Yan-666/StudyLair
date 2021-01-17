@@ -12,8 +12,7 @@ const validateLoginInput = require("../../validation/login");
 // Load User model
 const _ = require("lodash");
 const User = require("../../models/User");
-const Course = require("../../models/Course");
-const CourseNew = require("../../models/UW_Courses");
+const UW_Course = require("../../models/UW_Courses");
 const { ObjectId } = require("mongodb");
 
 // @route POST api/users/register
@@ -38,13 +37,6 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         password: req.body.password,
       });
-      const newCourse = new Course({
-        name: "c2",
-        prof: "Leonard Susskind",
-        students: ["mike", "paul", "sasha"],
-        counter: 3,
-      });
-      newCourse.save();
 
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
@@ -125,118 +117,98 @@ router.post("/login", (req, res) => {
 
 // This route accepts student id as parameter
 router.get("/getStudent/:id", async (req, res) => {
-  const { id } = req.params;
-
-  // Find the student
-  const student = await User.findById(id);
-
-  // Return the class list
-  res.status(200).json(student);
-  console.log("Student fetched");
-});
-
-// This route accepts course as the body, and id as parameter
-router.patch("/enrollCourse/:student", async (req, res) => {
-  const { student: id } = req.params;
-
-  const course = req.body;
-
-  // Find the student
-  const student = await User.findById(id);
-
-  //See if the student already enrolled in the course
-  for (const enrolledCourse of student.classList) {
-    if (enrolledCourse[0] === course.name) {
-      res.status(400).json({ message: "Already enrolled in this course" });
-      return;
-    }
-  }
-  console.log(course.name);
-
-  //Next find the course
-  //////////////////////////////////////////////////////
-  const existingCourse = await CourseNew.findOne({
-    course_uid: course.name,
-  });
-  console.log(existingCourse);
-
-  console.log(course.name);
-  ///////////////////////////////////////////////////
-  // CourseNew.findOne(
-  //   { course_u_index: "CBE 150" },
-  //   function (err, course_i) {
-  //     console.log(course_i);
-  //   }
-  // );
-
-    // If no such course exist
-    if (!existingCourse) {
-      res
-        .status(400)
-        .json({ message: "Our database does not contain this course" });
-      return;
-    }
-
-    // else{
-    //   res.status(200).json({message: "found"});
-    // }
-
-    // // Update the course list inside the current student
-    student.classList = [...student.classList, [course.name, "default name"]];
-
-    // Update the student list inside the existing course
-    existingCourse.students_ids = [...existingCourse.students_ids, id];
-    //existingCourse.counter = existingCourse.counter + 1;
-
-    // Update both items
-    await User.findByIdAndUpdate(id, student, { new: true });
-    await CourseNew.findByIdAndUpdate(existingCourse._id, existingCourse, {
-      new: true,
-    });
-
-    res.status(201).json(student);
-    console.log("Course added");
-  });
-
-  // This route accepts student as the body, and course name as parameter
-  router.patch("/dropCourse/:student", async (req, res) => {
-    const { student: id } = req.params;
-    const courseName = req.body.name;
-
-    console.log(courseName);
-    console.log(id);
+    const { id } = req.params;
 
     // Find the student
     const student = await User.findById(id);
-    const course = await CourseNew.findOne({
-      course_uid: courseName,
-    });
+
+    // Return the student
+    res.status(200).json(student);
+    console.log("Student fetched");
+});
+
+// This route accepts course as the body, and id as parameter
+// Enroll the student in the course, and add the course to the student
+router.patch("/enrollCourse/:student", async (req, res) => 
+{
+    const { student: id } = req.params;
+
+    const course = req.body;
+
+    // Find the student
+    const student = await User.findById(id);
+
+    // See if the student already enrolled in the course
+    for (const enrolledCourse of student.classList) 
+    {
+            if (enrolledCourse.class_name === course.name) 
+            {
+                res.status(400).json({ message: "Already enrolled in this course" });
+                return;
+            }
+    }
+
+    // Next find the course
+
+    const existingCourse = await UW_Course.findOne({course_uid: course.name,});
+
+    // If no such course exist
+    if (!existingCourse) 
+    {
+        res.status(400).json({ message: "Our database does not contain this course" });
+        return;
+    }
+
+    // Update the course list inside the current student
+    student.classList = [...student.classList, { class_name: course.name, buddy_list: [], unlike_list: [], }];
+
+    // Update the student list inside the existing course
+    existingCourse.students_ids = [...existingCourse.students_ids, id];
+
+    // Update both items
+    await User.findByIdAndUpdate(id, student, { new: true });
+    await UW_Course.findByIdAndUpdate(existingCourse._id, existingCourse, { new: true, });
+
+    res.status(201).json(student);
+    console.log("Course added");
+});
+
+// This route accepts student as the body, and course name as parameter
+// Remove student from the course, also delete the course from student
+router.patch("/dropCourse/:student", async (req, res) => {
+    const { student: id } = req.params;
+    const courseName = req.body.name;
+
+    // Find the student
+    const student = await User.findById(id);
+    const course = await UW_Course.findOne({ course_uid: courseName, });
 
     //Update the course list inside the current student
-    student.classList = student.classList.filter(
-      (combo) => combo[0] !== courseName
-    );
+    student.classList = student.classList.filter((combo) => combo.class_name !== courseName);
+
     //Update Student List in course
-    course.students_ids = course.students_ids.filter((combo) => combo !== id);
+    course.students_ids = course.students_ids.filter((student_id) => student_id !== id);
 
     //Update it
     await User.findByIdAndUpdate(id, student, { new: true });
-    await CourseNew.findByIdAndUpdate(course._id, course, {new: true});
+    await UW_Course.findByIdAndUpdate(course._id, course, { new: true });
 
     res.status(201).json(student);
     console.log("Course dropped");
 });
 
 // This route accepts student as the body
+// Update the entire student object inside the database
+// Used for profile update
 router.patch("/updateStudent", async (req, res) => {
-  const student = req.body;
-  const id = student.id ? student.id : student._id;
+    const student = req.body;
+    const id = student.id ? student.id : student._id;
 
-  // Find and update
-  await User.findByIdAndUpdate(id, student, { new: true });
+    // Find and update
+    await User.findByIdAndUpdate(id, student, { new: true });
 
-  res.status(201);
-  console.log("Student updated");
+    res.status(201);
+    console.log("Student updated");
 });
 
 module.exports = router;

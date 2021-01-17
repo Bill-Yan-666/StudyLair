@@ -65,6 +65,7 @@ export const enroll_course = (student, course) => async (dispatch) => {
     }
     catch (error)
     {
+        console.log(error);
         dispatch({
             type: REQUEST_FAILED,
             payload: error.response.data,
@@ -79,10 +80,7 @@ export const drop_course = (student, course) => async (dispatch) => {
     {
         const id = student.id ? student.id : student._id;
 
-        // Remove student from the course itself
-        axios.patch(`/api/courses/dropStudent/${id}`, course);
-
-        // Remove the course under student's info
+        // Update both the student and the course
         const { data } = await axios.patch(`/api/users/dropCourse/${id}`, course);
 
         // Dispatch to update the student

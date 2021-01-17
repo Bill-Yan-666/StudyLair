@@ -2,30 +2,21 @@ const mongoose = require("mongoose");
 const mongoosastic = require("mongoosastic");
 const Schema = mongoose.Schema;
 
-// Create Schema
 const CourseSchema = new Schema({
-  // Name of the course
-  course_u_index: {
-    type: String,  
-    //es_indexed:true
-  },
-  course_name: {
-    type: String,  
-    //es_indexed:true
-  },
-  course_folder: {
-    type: String,
-  },
+  // Short name of the course
+  course_uid: String,
+
+  // Name of course
+  course_name: String,
+
+  // Folder that stores the course, no longer necessary
+  course_folder: String,
 
   // Instructor of the course
-  course_prof: {
-    type: String,
-  },
+  course_prof: String,
 
   // List of students in the course, by the id stored in database
-  students_ids: {
-    type: [String],
-  },
+  students_ids: [String],
 });
 
 CourseSchema.plugin(mongoosastic,{  

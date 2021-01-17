@@ -77,7 +77,7 @@ class StudentDashboard extends Component {
 
           {/* My Courses Button */}
           <div className='col s12 m4'>
-            <button className="btn-large waves-effect waves-light hoverable blue PopUp-Button" onClick={() => this.popUpControl('CoursePopUp')}>
+            <button className="btn-large waves-effect waves-light hoverable PopUp-Button" onClick={() => this.popUpControl('CoursePopUp')}>
               <br/><i className="material-icons" style={{ fontSize: "130px" }}>class</i><br/>
               My Courses
             </button>
@@ -85,7 +85,7 @@ class StudentDashboard extends Component {
 
           {/* My Profile Button */}
           <div className='col s12 m4'>
-            <button className="btn-large waves-effect waves-light hoverable blue PopUp-Button" onClick={() => this.popUpControl('ProfilePopUp')}>
+            <button className="btn-large waves-effect waves-light hoverable PopUp-Button" onClick={() => this.popUpControl('ProfilePopUp')}>
               <br/><i className="material-icons" style={{ fontSize: "130px" }}>account_circle</i><br/>
               My Profile
             </button>
@@ -94,7 +94,7 @@ class StudentDashboard extends Component {
 
           {/* Find Buddy Button */}
           <div className='col s12 m4'>
-            <button className="btn-large waves-effect waves-light hoverable blue PopUp-Button" onClick={() => this.popUpControl('BuddyPopUp')}>
+            <button className="btn-large waves-effect waves-light hoverable PopUp-Button" onClick={() => this.popUpControl('BuddyPopUp')}>
               <br/><i className="material-icons" style={{ fontSize: "130px" }}>people</i><br/>
               Find a Buddy
             </button>

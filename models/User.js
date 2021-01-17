@@ -25,6 +25,10 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  bio:
+  {
+      type: String,
+  },
   photo:
   {
     type: String,
@@ -41,8 +45,11 @@ const UserSchema = new Schema({
   },
   classList: 
   {
-    type: [[String]],
-    default: [["c1", "a1"], ["c2", "a2"]]
+    type: [{
+        class_name: String,
+        buddy_list: [{buddy_id: String, status: Boolean}],
+        unlike_list: [{unlike_id: String, status: Boolean}],    
+    }],
   },
   availability:
   {

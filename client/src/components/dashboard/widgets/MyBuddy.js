@@ -40,10 +40,14 @@ class MyBuddy extends Component
                     }
                     </div>
                     
-                    <div className='col s6 m8'><h2 style={{ display: 'inline-block', margin: '0px' }}>{this.state.classList[this.state.index][0]}</h2></div>
+                    <div className='col s6 m8'>
+                        <h2 style={{ display: 'inline-block', margin: '0px' }}>
+                            {this.state.classList[this.state.index] ? this.state.classList[this.state.index].class_name : ''}
+                        </h2>
+                    </div>
                     
                     <div className='col s3 m2'>
-                    {this.state.index === this.state.classList.length-1 ? '' :
+                    {(this.state.index === this.state.classList.length-1) || (this.state.classList.length === 0) ? '' :
                         <button className='btn-flat' onClick={() => this.flip(1)} style={{ marginTop: '13px'}}>
                             <i className='material-icons' style={{ fontSize: '40px'}}>arrow_forward</i>
                         </button>

@@ -46,7 +46,7 @@ class MyCourse extends Component
 
     removeCourse(course)
     {
-        const courseInfo = { name: course[0], prof: course[1] };
+        const courseInfo = { name: course.class_name };
 
         this.props.drop_course(this.state.user, courseInfo);
     }
@@ -63,9 +63,9 @@ class MyCourse extends Component
                 {/* Course list section */}
                 <ul className='collection'>
                     {!this.state.classList ? <h1>loading...</h1> : this.state.classList.map((course) => (
-                        <li className='collection-item' key={course[0]}>
+                        <li className='collection-item' key={course.class_name}>
                             <div>
-                                <Link to='/courseDashboard' onClick={() => this.setCourse(course)}><h5>{course[0]}</h5></Link>
+                                <Link to='/courseDashboard' onClick={() => this.setCourse(course)}><h5>{course.class_name}</h5></Link>
                             </div>
                             <button className='secondary-content btn-floating btn-large' style={{ marginTop:'-40px' }} onClick={() => this.removeCourse(course)}>
                                 <i className='material-icons large red'>delete</i>
