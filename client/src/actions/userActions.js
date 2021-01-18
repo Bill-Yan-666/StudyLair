@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken.js';
 import jwt_decode from 'jwt-decode';
 
-import { GET_ERRORS, SET_CURRENT_USER, REQUEST_RESET } from './types.js';
+import { GET_ERRORS, SET_CURRENT_USER, REQUEST_RESET, GET_BUDDIES, REMOVE_BUDDY } from './types.js';
 
 // Register User
 export const register_User = (userData, history) => async (dispatch) => {
@@ -111,6 +111,41 @@ export const update_user = (user) => async (dispatch) => {
     await axios.patch('/api/users/updateStudent', user);
 
     return;
+}
+
+export const get_buddies = (buddyList) => async (dispatch) =>
+{
+    console.log('Inside user actions, start fetching buddies');
+
+    let buddyArray = [];
+
+    for (const item of buddyList) 
+    {
+        if (item.status)
+        {
+            const response = await axios.get(`/api/users/getStudent/${item.buddy_id}`);
+            buddyArray.push(response.data);
+        }
+    }
+
+    dispatch(
+    {
+        type: GET_BUDDIES,
+        payload: buddyArray,
+    });
+}
+
+export const remove_buddy = (userId, buddyId, className) => async (dispatch) =>
+{
+    console.log('Inside user actions, start removing buddies');
+
+    const { data } = await axios.patch('/api/users/removeBuddy', { userId, buddyId, className });
+
+    dispatch(
+    {
+        type: SET_CURRENT_USER,
+        payload: data,
+    })
 }
 
 export const reset_status = () => (dispatch) => {

@@ -3,38 +3,83 @@ import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
 
+import SwipeDeck from './Swipe/SwipeDeck.js';
+
+import { fetch_and_filter } from '../../../actions/courseActions';
+import { get_buddies, remove_buddy } from '../../../actions/userActions';
+
 class MyBuddy extends Component
 {
     constructor(props)
     {
         super(props);
-        this.state = { classList: props.classList, index: 0, buddyList: null, MLList: null, tinderList: null }
+        this.state = 
+        { 
+            classList: props.classList, 
+            index: 0, 
+            user: props.user, 
+            studentList: null, 
+            stu_loaded: false,
+            buddyList: null,
+            bud_loaded: false,
+        }        
     }
 
     static getDerivedStateFromProps(nextProps, currentState)
     {
         if (nextProps.classList !== currentState.classList)
         {
+            if (nextProps.classList[0])
+            {
+                nextProps.fetch_and_filter(nextProps.classList[0].class_name, nextProps.classList[0].buddy_list, nextProps.classList[0].unlike_list);
+                nextProps.get_buddies(nextProps.classList[0].buddy_list);
+            }
+
             return { ...currentState, classList: nextProps.classList, };
         }
+
+        if (nextProps.stu_loaded && !currentState.stu_loaded && nextProps.bud_loaded && !currentState.bud_loaded)
+        {
+            return { ...currentState, studentList: nextProps.studentList, stu_loaded: true, buddyList: nextProps.buddyList, bud_loaded: true };
+        }
+        
+        if (nextProps.buddyList !== currentState.buddyList)
+        {
+            return { ...currentState, buddyList: nextProps.buddyList, studentList: nextProps.studentList, };
+        }
+        
         return null;
     }
 
     flip = (direction) => 
     {
-        let index = direction ? this.state.index + 1 : this.state.index - 1;
-        this.setState({ ...this.state, index: index });
+        let index = this.state.index + direction;
+        let course = this.state.classList[index];
+
+        this.setState({ ...this.state, index: index, stu_loaded: false, bud_loaded: false });
+        this.props.fetch_and_filter(course.class_name, course.buddy_list, course.unlike_list);
+        this.props.get_buddies(course.buddy_list);
+    }
+
+    removeBuddy = (buddyId) =>
+    {
+        let userId = this.state.user.id || this.state.user._id;
+        this.props.remove_buddy(userId, buddyId, this.state.classList[this.state.index].class_name);
     }
 
     render()
     {
+        console.log(this.state.buddyList);
+        const index = this.state.index;
+        const classList = this.state.classList;
+
         return (
             <div className='row'>
                 {/* Course Switch Bar */}
-                <div className='col s12 grey-text text-darken-1' style={{ textAlign: 'center', marginTop: '5%' }}>
+                <div className='col s12' style={{ textAlign: 'center', marginTop: '2%' }}>
                     <div className='col s3 m2'>
-                    {!this.state.index ? '' :
-                        <button className='btn-flat' onClick={() => this.flip(0)} style={{ marginTop: '13px'}}>
+                    {!index ? '' :
+                        <button className='btn-flat' onClick={() => this.flip(-1)} style={{ marginTop: '13px'}}>
                             <i className='material-icons' style={{ fontSize: '40px'}}>arrow_back</i>
                         </button>
                     }
@@ -42,12 +87,12 @@ class MyBuddy extends Component
                     
                     <div className='col s6 m8'>
                         <h2 style={{ display: 'inline-block', margin: '0px' }}>
-                            {this.state.classList[this.state.index] ? this.state.classList[this.state.index].class_name : ''}
+                            {classList[index] ? classList[index].class_name : ''}
                         </h2>
                     </div>
                     
                     <div className='col s3 m2'>
-                    {(this.state.index === this.state.classList.length-1) || (this.state.classList.length === 0) ? '' :
+                    {(index === classList.length-1) || (classList.length === 0) ? '' :
                         <button className='btn-flat' onClick={() => this.flip(1)} style={{ marginTop: '13px'}}>
                             <i className='material-icons' style={{ fontSize: '40px'}}>arrow_forward</i>
                         </button>
@@ -55,70 +100,31 @@ class MyBuddy extends Component
                     </div>
                 </div>
                 
+                {/* Current Buddies */}
                 <div className='col s12 m5'>
-                    {/* Current Buddies */}
                     <div className='col s12'><h6>My Buddies</h6><div className='divider'></div></div>
 
-                    {/* Cards */}
-                    <div className='col s12' style={{ height: '220px', overflowY: 'auto' }}>
-                        <div className='B-card' style={{ margin: '10px', height: '200px', width: '145px', padding: '0px', borderRadius: '40px', display: 'inline-block' }}>
-                            <button style={{ textAlign: 'center', fontSize: '20px' }}>
-                                <img src='http://thecartdriver.com/wp-content/uploads/2013/02/jojos-bizarre-adventure-cars-maniacal-laugh-460x258.jpg' alt=''
-                                    style={{ height: '150px', borderRadius: '40px'}} />
-                                Someone
-                            </button>
-                        </div>
-
-                        <div className='B-card' style={{ margin: '10px', height: '200px', width: '145px', padding: '0px', borderRadius: '40px', display: 'inline-block' }}>
-                            <button style={{ textAlign: 'center', fontSize: '20px' }}>
-                                <img src='http://thecartdriver.com/wp-content/uploads/2013/02/jojos-bizarre-adventure-cars-maniacal-laugh-460x258.jpg' alt=''
-                                    style={{ height: '150px', borderRadius: '40px'}} />
-                                Someone
-                            </button>
-                        </div>
-
-                        <div className='B-card' style={{ margin: '10px', height: '200px', width: '145px', padding: '0px', borderRadius: '40px', display: 'inline-block' }}>
-                            <button style={{ textAlign: 'center', fontSize: '20px' }}>
-                                <img src='http://thecartdriver.com/wp-content/uploads/2013/02/jojos-bizarre-adventure-cars-maniacal-laugh-460x258.jpg' alt=''
-                                    style={{ height: '150px', borderRadius: '40px'}} />
-                                Someone
-                            </button>
-                        </div>
-                    </div>
-                
-                    {/* Recommendations */}
-                    <div className='col s12'><h6>Recommended Buddies</h6><div className='divider'></div></div>
-
-                    {/* Cards */}
-                    <div className='col s12' style={{ height: '220px', overflowY: 'auto' }}>
-                        <div className='B-card' style={{ margin: '10px', height: '200px', width: '145px', padding: '0px', borderRadius: '40px', display: 'inline-block' }}>
-                            <button style={{ textAlign: 'center', fontSize: '20px' }}>
-                                <img src='http://thecartdriver.com/wp-content/uploads/2013/02/jojos-bizarre-adventure-cars-maniacal-laugh-460x258.jpg' alt=''
-                                    style={{ height: '150px', borderRadius: '40px'}} />
-                                Someone
-                            </button>
-                        </div>
-                    </div>
+                    <ul className='collection col s12' style={{ border: 'none', }}>
+                        {!this.state.buddyList ? '' : this.state.buddyList.map((item) => 
+                        (
+                            <li key={item._id} className='collection-item avatar' style={{ paddingLeft: '90px', borderRadius: '20px', marginBottom: '2%', }}>
+                                <button style={{ width: '100%', border: 'none', padding: '0', backgroundColor: 'transparent', textAlign: 'inherit', }} onClick={(e) => console.log('Hi')}>
+                                    <img className='circle' src={item.photo} alt="" style={{ height: '60px', width: '60px', borderRadius: '25%', }} />
+                                    <span style={{ fontSize: '20px',  lineHeight: '35px', }}>{item.name}</span>
+                                    <p>{item.major}</p>
+                                </button>   
+                                <button key={item.name} className='btn-floating btn-large' style={{ position: 'absolute', right: '5%', top: '17%', backgroundColor: 'red' }} onClick={(e) => this.removeBuddy(item._id)}>
+                                    <i className='material-icons large'>delete</i>
+                                </button> 
+                            </li>
+                        ))}
+                        
+                    </ul>
                 </div>
 
                 {/* Tinder */}
-                <div className='col s12 m7' style={{ textAlign: 'center' }}>
-                    <div className='col s3 m2' style={{ marginTop: '200px'}}>
-                        <button className='btn-flat'><i className='material-icons' style={{ fontSize: '50px' }}>chevron_left</i></button>
-                    </div>
-
-                    <div className='col s6 m8' style={{ height: '410px', padding: '0px', marginTop: '20px', marginBottom: '20px' }}>
-                        <div className='B-card' style={{ width: '300px', margin: 'auto', height: '100%' }}>
-                            <img src='https://i.ytimg.com/vi/8iL4Izfx8DM/maxresdefault.jpg' alt='' style={{ borderRadius: '10px' }} />
-                            <p>Some Info</p>
-                        </div>
-                    </div>
-
-                    <div className='col s3 m2' style={{ marginTop: '200px'}}>
-                        <button className='btn-flat'><i className='material-icons' style={{ fontSize: '50px'}}>chevron_right</i></button>
-                    </div>
-
-                    <div className='col s12'><button className='btn-large green'>Accept</button></div>
+                <div id='Deckholder' className='col s12 m7'>
+                    {!this.state.stu_loaded ? <h1>Loading...</h1> : <SwipeDeck studentInfo={this.state.studentList} userId={this.state.user.id || this.state.user._id} />}
                 </div>
             </div>
         )
@@ -129,11 +135,26 @@ MyBuddy.propTypes =
 {
     user: PropTypes.object.isRequired,
     classList: PropTypes.array.isRequired,
+    studentList: PropTypes.array,
+    stu_loaded: PropTypes.bool.isRequired,
+    buddyList: PropTypes.array,
+    bud_loaded: PropTypes.bool.isRequired,
+
+    fetch_and_filter: PropTypes.func.isRequired,
+    get_buddies: PropTypes.func.isRequired,
+    remove_buddy: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state)
 {
-    return { user: state.auth.user, classList: state.auth.user.classList, };
+    return { 
+        user: state.auth.user, 
+        classList: state.auth.user.classList, 
+        studentList: state.courseInfo.studentList, 
+        stu_loaded: state.courseInfo.loaded, 
+        buddyList: state.auth.buddyList,
+        bud_loaded: state.auth.bud_loaded,
+    };
 }
 
-export default connect(mapStateToProps, { })(MyBuddy);
+export default connect(mapStateToProps, { fetch_and_filter, get_buddies, remove_buddy })(MyBuddy);

@@ -20,6 +20,7 @@ class MyProfile extends Component
             major: userRef.major,
             gradYear: userRef.gradYear,
             email: userRef.email,
+            bio: userRef.bio,
             photo: userRef.photo,
             availability: userRef.availability,
             day: 'Monday',
@@ -42,6 +43,7 @@ class MyProfile extends Component
                 major: userRef.major,
                 gradYear: userRef.gradYear,
                 email: userRef.email,
+                bio: userRef.bio,
                 photo: userRef.photo,
                 availability: userRef.availability,
             };
@@ -104,6 +106,10 @@ class MyProfile extends Component
 
         for (const item of inputList) 
         {
+            if (item.getAttribute('id') === 'courseName' || item.getAttribute('id') === 'courseProf')
+            {
+                continue;
+            }
             editable ? item.setAttribute('disabled', '') : item.removeAttribute('disabled');
         }
 
@@ -127,6 +133,10 @@ class MyProfile extends Component
 
         for (const item of inputList) 
         {
+            if (item.getAttribute('id') === 'courseName' || item.getAttribute('id') === 'courseProf')
+            {
+                continue;
+            }
             item.setAttribute('disabled', '');    
         }
 
@@ -247,7 +257,7 @@ class MyProfile extends Component
         return (
             <div className='MyProfile' style={{ width: '100%' }}>
                 {/* Title section */}
-                <div className='black-text text-lighten-1' style={{ textAlign:'center', marginTop:'5%' }}>
+                <div className='black-text text-lighten-1' style={{ textAlign:'center', marginTop:'2%' }}>
                     <h2>My Profile</h2>
                 </div>
 
@@ -296,6 +306,12 @@ class MyProfile extends Component
                         <div className='input-field col s12 m12 l6'>
                             <input id='email' type='email' value={this.state.email || ''} onChange={this.onChange}></input>
                             <label htmlFor='email'>Email</label>
+                        </div>
+
+                        {/* Bio */}
+                        <div className='input-field col s12 m12 l12'>
+                            <input id='bio' type='text' value={this.state.bio || ''} onChange={this.onChange}></input>
+                            <label htmlFor='bio'>Biography about Yourself</label>
                         </div>
 
                         {/* Add Availability */}

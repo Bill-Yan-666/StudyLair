@@ -31,7 +31,7 @@ class MyCourse extends Component
     }
 
     setCourse = (course) => {
-        const courseInfo = { name: course[0], prof: course[1] };
+        const courseInfo = { name: course.class_name };
 
         this.props.set_course(courseInfo);
     }
@@ -56,7 +56,7 @@ class MyCourse extends Component
         return (
             <div className='container'>
                 {/* Title section */}
-                <div className="col s12 grey-text text-darken-1" style={{ textAlign:'center', marginTop:'5%'}}>
+                <div className="col s12 grey-text text-darken-1" style={{ textAlign:'center', marginTop:'2%'}}>
                     <h2>My Courses</h2>
                 </div>
 

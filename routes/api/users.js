@@ -211,4 +211,39 @@ router.patch("/updateStudent", async (req, res) => {
     console.log("Student updated");
 });
 
+router.patch('/removeBuddy', async (req, res) =>
+{
+    const { userId, buddyId, className } = req.body;
+
+    // Find the user and the buddy
+    const user = await User.findById(userId);
+    const buddy = await User.findById(buddyId);
+
+    // Remove each other from the buddy list
+    for (const item of user.classList)
+    {
+        if (item.class_name === className)
+        {
+            item.buddy_list = item.buddy_list.filter((bud) => bud.buddy_id !== buddyId);
+            break;
+        }
+    }
+
+    for (const item of buddy.classList)
+    {
+        if (item.class_name === className)
+        {
+            item.buddy_list = item.buddy_list.filter((bud) => bud.buddy_id !== userId);
+            break;
+        }
+    }
+
+    // Update both the user and the buddy
+    await User.findByIdAndUpdate(userId, user, { new: true });
+    await User.findByIdAndUpdate(buddyId, buddy, { new: true });
+
+    res.status(201).json(user);
+    console.log('Buddy removed');
+})
+
 module.exports = router;

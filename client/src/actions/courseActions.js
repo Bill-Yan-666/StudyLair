@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { DROP_COURSE, ENROLL_COURSE, SET_COURSE, REQUEST_SUCCEED, REQUEST_FAILED, FETCH_COURSE_INFO } from './types';
 
-export const fetch_course_info = (courseInfo) => async (dispatch) => {
+export const fetch_course_info = (courseInfo) => async (dispatch) => 
+{
     console.log('Inside course actions, start fetching course info');
 
     axios.post('/api/courses/fetchCourse', courseInfo)
@@ -12,6 +13,50 @@ export const fetch_course_info = (courseInfo) => async (dispatch) => {
         type: FETCH_COURSE_INFO,
         payload: response.data.studentList,
     }))
+
+    // If cannot find the course
+    .catch((error) => console.log(error));
+};
+
+export const fetch_and_filter = (className, buddyList, unlikeList) => async (dispatch) =>
+{
+    console.log('Inside course actions, start fetching and filtering student in course');
+
+    axios.post('/api/courses/fetchCourse', { name: className })
+
+    .then((response) =>
+    {
+        let studentList = response.data.studentList;
+
+        // Filter the buddies and the unlikes
+        studentList = studentList.filter((student) =>
+        {
+            for (const item of buddyList) 
+            {
+                if (item.buddy_id === student._id)
+                {
+                    return false;
+                }
+            }
+
+            for (const item of unlikeList)
+            {
+                if (item.unlike_id === student._id && item.status)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        // And finally dispatch the student list
+        dispatch(
+        {
+            type: FETCH_COURSE_INFO,
+            payload: studentList,
+        });
+    })
 
     // If cannot find the course
     .catch((error) => console.log(error));

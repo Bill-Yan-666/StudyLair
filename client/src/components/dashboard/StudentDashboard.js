@@ -36,7 +36,7 @@ class StudentDashboard extends Component {
         {/* Below are the pop-up windows */}
         {/* The My Course pop-up */}
         <div className='PopUp' id="CoursePopUp">
-        <button className="btn-floating btn-large red" style={{ marginTop: "-2%", left: "98%"}} onClick={() => this.popUpControl('CoursePopUp')}>
+        <button className="btn-floating btn-large red" style={{ position: 'absolute', right: '-30px', top: '-25px' }} onClick={() => this.popUpControl('CoursePopUp')}>
             <i className="material-icons">close</i>
           </button>
           <MyCourse />
@@ -44,7 +44,7 @@ class StudentDashboard extends Component {
 
         {/* The My Profile pop-up */}
         <div className='PopUp' id="ProfilePopUp">
-          <button className="btn-floating btn-large red" style={{ marginTop: "-2%", left: "98%"}} onClick={() => this.popUpControl('ProfilePopUp')}>
+          <button className="btn-floating btn-large red" style={{ position: 'absolute', right: '-30px', top: '-25px' }} onClick={() => this.popUpControl('ProfilePopUp')}>
             <i className="material-icons">close</i>
           </button>
           <MyProfile />
@@ -52,7 +52,7 @@ class StudentDashboard extends Component {
 
         {/* The Find Buddy pop-up */}
         <div className='PopUp' id="BuddyPopUp">
-          <button className="btn-floating btn-large red" style={{ marginTop: "-2%", left: "98%"}} onClick={() => this.popUpControl('BuddyPopUp')}>
+          <button className="btn-floating btn-large red" style={{ position: 'absolute', right: '-30px', top: '-25px' }} onClick={() => this.popUpControl('BuddyPopUp')}>
             <i className="material-icons">close</i>
           </button>
           <MyBuddy />
