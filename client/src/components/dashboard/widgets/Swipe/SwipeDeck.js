@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSprings } from 'react-spring';
-import { useGesture } from 'react-use-gesture';
+import { useDrag } from 'react-use-gesture';
 
 import SwipeCard from './SwipeCard.js';
 
@@ -28,12 +28,6 @@ const from = (index) =>
     scale: 1.5,
 });
 
-// Define the function handle for api call for liking/unliking
-const likeOrUnlike = (userId, student, status) =>
-{
-    console.log('The status is: ' + status);
-}
-
 // Define the function handle for requesting new stack of student info
 const reload = () => 
 {
@@ -44,7 +38,7 @@ const reload = () =>
 // nor in the unlike list, when the deck is empty, the function will
 // make an api call to server to update the Student Info passed into here
 // so the deck will refresh
-function SwipeDeck({ studentInfo, userId })
+function SwipeDeck({ studentInfo, userId, className, likeOrUnlike })
 {
     // Define a stack for the swiped cards
     const [swiped] = useState(() => new Set());
@@ -53,20 +47,15 @@ function SwipeDeck({ studentInfo, userId })
     const [props, setProps] = useSprings(studentInfo.length, (index) => ({...to(index), from: from(index)}));
 
     // Bind the detector to trace user actions
-    const bind = useGesture(
-    ({ args: [index], down, delta: [xDelta, yDelta], direction: [xDir], velocity}) => 
+    const bind = useDrag(({ args: [index], down, movement: [delX, delY], swipe: [swipeX] }) => 
     {
-        // Determine whether current action corresponds to like or unlike
-        // With 1 being like, 0 being nothing, -1 being unlike
-        const dir = xDir > 0 ? 1 : -1;
-        const status = velocity <= 0.2 ? 0 : dir;
-
-        // If the current action is something, add the current card to swiped
+        // If the user swiped the card, add to the swiped stack
         // And make api call to add the student that the card represent
-        if (!down && (status !== 0))
+        if (!down && swipeX !== 0)
         {
             swiped.add(index);
-            likeOrUnlike(userId, studentInfo[index], status);
+            likeOrUnlike(userId, studentInfo[index], swipeX, className);
+            console.log(swiped.length + ' ' + studentInfo.length);
         }
 
         // Set the target transition based on the user gesture
@@ -84,14 +73,15 @@ function SwipeDeck({ studentInfo, userId })
             // Set the x and y position of the card,
             // If card is in the swiped set, make it outside the frame
             // Otherwise the card will follow the user's mouse
-            const x = isSwiped ? (200 + window.innerWidth) * dir : (down ? xDelta : 0);
-            const y = down ? yDelta : 0;
+            const x = isSwiped ? (200 + window.innerWidth) * swipeX : (down ? delX : 0);
+            const y = down ? delY : 0;
 
             // Set the scale
             const scale = down ? 1.1 : 1;
 
             return { x: x, y: y, scale: scale, delay: undefined, config: { friction: 50, tension: down ? 800 : isSwiped ? 200 : 500 }};
         });
+        
 
         // If the stack is card stack is empty, make api call to request new stack
         if (swiped.length === studentInfo.length)
@@ -99,11 +89,9 @@ function SwipeDeck({ studentInfo, userId })
             reload();
         }
     });
-
-    return props.map(({ x, y, scale }, index) =>
-    (
-        <SwipeCard key={index} index={index} x={x} y={y} scale={scale} student={studentInfo[index]} bind={bind}/>
-    ))
+    
+    return props.map(({ x, y, scale }, index) => (<SwipeCard key={index} index={index} x={x} y={y} scale={scale} student={studentInfo[index]} bind={bind}/>));
 };
+
 
 export default SwipeDeck;

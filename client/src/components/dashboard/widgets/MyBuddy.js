@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import SwipeDeck from './Swipe/SwipeDeck.js';
 
 import { fetch_and_filter } from '../../../actions/courseActions';
-import { get_buddies, remove_buddy } from '../../../actions/userActions';
+import { get_buddies, remove_buddy, like_buddy, unlike_buddy } from '../../../actions/userActions';
 
 class MyBuddy extends Component
 {
@@ -67,9 +67,21 @@ class MyBuddy extends Component
         this.props.remove_buddy(userId, buddyId, this.state.classList[this.state.index].class_name);
     }
 
+    // Define the function handle for api call for liking/unliking
+    likeOrUnlike = async (userId, student, status, className ) =>
+    {
+        if (status === 1)
+        {
+            await this.props.like_buddy(userId, student._id, className);
+        }
+        else
+        {
+            await this.props.unlike_buddy(userId, student._id, className);
+        }
+    }
+
     render()
     {
-        console.log(this.state.buddyList);
         const index = this.state.index;
         const classList = this.state.classList;
 
@@ -113,7 +125,7 @@ class MyBuddy extends Component
                                     <span style={{ fontSize: '20px',  lineHeight: '35px', }}>{item.name}</span>
                                     <p>{item.major}</p>
                                 </button>   
-                                <button key={item.name} className='btn-floating btn-large' style={{ position: 'absolute', right: '5%', top: '17%', backgroundColor: 'red' }} onClick={(e) => this.removeBuddy(item._id)}>
+                                <button key={item.name} className='btn-floating btn-large' style={{ position: 'absolute', right: '5%', top: '17%', backgroundColor: 'red', zIndex: '0' }} onClick={(e) => this.removeBuddy(item._id)}>
                                     <i className='material-icons large'>delete</i>
                                 </button> 
                             </li>
@@ -123,9 +135,15 @@ class MyBuddy extends Component
                 </div>
 
                 {/* Tinder */}
-                <div id='Deckholder' className='col s12 m7'>
-                    {!this.state.stu_loaded ? <h1>Loading...</h1> : <SwipeDeck studentInfo={this.state.studentList} userId={this.state.user.id || this.state.user._id} />}
-                </div>
+                {!this.state.stu_loaded ? <h1>Loading...</h1> : 
+                <div className='col s12 m7 cardHolder'>
+                    <SwipeDeck 
+                        studentInfo={this.state.studentList} 
+                        userId={this.state.user.id || this.state.user._id} 
+                        className={this.state.classList[this.state.index].class_name} 
+                        likeOrUnlike={this.likeOrUnlike}
+                    />
+                </div>}
             </div>
         )
     }
@@ -143,6 +161,8 @@ MyBuddy.propTypes =
     fetch_and_filter: PropTypes.func.isRequired,
     get_buddies: PropTypes.func.isRequired,
     remove_buddy: PropTypes.func.isRequired,
+    like_buddy: PropTypes.func.isRequired,
+    unlike_buddy: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state)
@@ -157,4 +177,4 @@ function mapStateToProps(state)
     };
 }
 
-export default connect(mapStateToProps, { fetch_and_filter, get_buddies, remove_buddy })(MyBuddy);
+export default connect(mapStateToProps, { fetch_and_filter, get_buddies, remove_buddy, like_buddy, unlike_buddy })(MyBuddy);

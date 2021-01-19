@@ -9,4 +9,3 @@ export const ENROLL_COURSE = "ENROLL_COURSE";
 export const DROP_COURSE = "DROP_COURSE";
 export const SET_COURSE = 'SET_COURSE';
 export const GET_BUDDIES = 'GET_BUDDIES';
-export const REMOVE_BUDDY = 'REMOVE_BUDDY';

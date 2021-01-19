@@ -1,29 +1,9 @@
 
 
-#Deckholder > div {
-  position: absolute;
-  width: 100%;
-  min-height: max-content;
-  will-change: transform;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#Deckholder > div > div {
-  padding: 5px;
-  background-color: white;
-  background-size: auto 85%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 300px;
-  max-width: 300px;
-  height: 550px;
-  max-height: 570px;
-  will-change: transform;
-  border-radius: 10px;
-  box-shadow: 0 12.5px 100px -10px rgba(50, 50, 73, 0.4),
-    0 10px 10px -10px rgba(50, 50, 73, 0.3);
+.cardHolder {
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
 }
 
 .card img {
@@ -35,6 +15,7 @@
 .card h2 {
   display: inline-block;
   margin-right: 10px;
+  user-select: none;
 }
 
 .card h2:nth-of-type(2) {
@@ -46,6 +27,7 @@
   margin-top: -15px;
   margin-left: 2px;
   color: lightgray;
+  user-select: none;
 }
 
 .card h5:last-of-type {
@@ -58,6 +40,7 @@
 
 .card {
   height: 500px !important;
+  width: 300px;
 }
 
 .slider-control-bottomcenter {

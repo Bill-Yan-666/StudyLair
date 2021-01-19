@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken.js';
 import jwt_decode from 'jwt-decode';
 
-import { GET_ERRORS, SET_CURRENT_USER, REQUEST_RESET, GET_BUDDIES, REMOVE_BUDDY } from './types.js';
+import { GET_ERRORS, SET_CURRENT_USER, REQUEST_RESET, GET_BUDDIES, } from './types.js';
 
 // Register User
 export const register_User = (userData, history) => async (dispatch) => {
@@ -146,6 +146,32 @@ export const remove_buddy = (userId, buddyId, className) => async (dispatch) =>
         type: SET_CURRENT_USER,
         payload: data,
     })
+}
+
+export const like_buddy = (userId, buddyId, className) => async (dispatch) => 
+{
+    console.log('Inside user actions, start liking buddy');
+
+    const { data } = await axios.patch('/api/users/likeBuddy', { userId, buddyId, className });
+    
+    dispatch(
+    {
+        type: SET_CURRENT_USER,
+        payload: data,
+    });
+}
+
+export const unlike_buddy = (userId, buddyId, className) => async (dispatch) =>
+{
+    console.log('Inside user actions, start adding person to unlike list');
+
+    const { data } = await axios.patch('/api/users/unlikeBuddy', { userId, buddyId, className });
+
+    dispatch(
+    {
+        type: SET_CURRENT_USER,
+        payload: data,
+    });
 }
 
 export const reset_status = () => (dispatch) => {

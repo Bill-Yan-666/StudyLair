@@ -244,6 +244,92 @@ router.patch('/removeBuddy', async (req, res) =>
 
     res.status(201).json(user);
     console.log('Buddy removed');
-})
+});
+
+router.patch('/likeBuddy', async (req, res) =>
+{
+    const { userId, buddyId, className } = req.body;
+
+    // Find the user and the buddy
+    const user = await User.findById(userId);
+    const buddy = await User.findById(buddyId);
+
+    // First inspect the other user see if self is already being liked
+    let found = false;
+
+    for (const item of buddy.classList)
+    {
+        if (item.class_name === className)
+        {
+            for (const bud of item.buddy_list)
+            {
+                if (bud.buddy_id == userId)
+                {
+                    found = true;
+                    bud.status = true;
+                }
+            }
+
+            break;
+        }
+    }
+
+    // Then base on the found status to decide the initial status of buddy
+    for (const item of user.classList)
+    {
+        if (item.class_name === className)
+        {
+            item.buddy_list.push({ buddy_id: buddyId, status: found });
+
+            break;
+        }
+    }
+
+    // Update both the user and the buddy
+    await User.findByIdAndUpdate(userId, user, { new: true });
+    if (found) {await User.findByIdAndUpdate(buddyId, buddy, { new: true });}
+
+    res.status(201).json(user);
+    console.log('Buddy liked');    
+});
+
+router.patch('/unlikeBuddy', async (req, res) =>
+{
+    const { userId, buddyId, className } = req.body;
+
+    // Find the user
+    const user = await User.findById(userId);
+
+    // Unlike the other person
+    for (const item of user.classList)
+    {
+        if (item.class_name === className)
+        {
+            let found = false;
+
+            for (const unlike of item.unlike_list)
+            {
+                if (unlike.unlike_id == buddyId)
+                {
+                    found = true;
+                    unlike.status = true;
+                }
+            }
+
+            if (!found)
+            {
+                item.unlike_list.push({ unlike_id: buddyId, status: false });
+            }
+
+            break;
+        }
+    }
+
+    // Update the user
+    await User.findByIdAndUpdate(userId, user, { new: true });
+
+    res.status(201).json(user);
+    console.log('Person unliked');    
+});
 
 module.exports = router;
