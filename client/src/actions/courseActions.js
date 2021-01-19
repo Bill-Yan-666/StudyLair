@@ -18,7 +18,7 @@ export const fetch_course_info = (courseInfo) => async (dispatch) =>
     .catch((error) => console.log(error));
 };
 
-export const fetch_and_filter = (className, buddyList, unlikeList) => async (dispatch) =>
+export const fetch_and_filter = (className, buddyList, unlikeList, userId) => async (dispatch) =>
 {
     console.log('Inside course actions, start fetching and filtering student in course');
 
@@ -45,6 +45,11 @@ export const fetch_and_filter = (className, buddyList, unlikeList) => async (dis
                 {
                     return false;
                 }
+            }
+
+            if (student._id === userId)
+            {
+                return false;
             }
 
             return true;

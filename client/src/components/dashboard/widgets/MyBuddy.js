@@ -31,7 +31,7 @@ class MyBuddy extends Component
         {
             if (nextProps.classList[0])
             {
-                nextProps.fetch_and_filter(nextProps.classList[0].class_name, nextProps.classList[0].buddy_list, nextProps.classList[0].unlike_list);
+                nextProps.fetch_and_filter(nextProps.classList[0].class_name, nextProps.classList[0].buddy_list, nextProps.classList[0].unlike_list, nextProps.user._id || nextProps.user.id);
                 nextProps.get_buddies(nextProps.classList[0].buddy_list);
             }
 
@@ -43,11 +43,11 @@ class MyBuddy extends Component
             return { ...currentState, studentList: nextProps.studentList, stu_loaded: true, buddyList: nextProps.buddyList, bud_loaded: true };
         }
         
-        if (nextProps.buddyList !== currentState.buddyList)
+        if (nextProps.buddyList !== currentState.buddyList || nextProps.studentList !== currentState.studentList)
         {
-            return { ...currentState, buddyList: nextProps.buddyList, studentList: nextProps.studentList, };
+            return { ...currentState, buddyList: nextProps.buddyList, studentList: nextProps.studentList };
         }
-        
+
         return null;
     }
 
@@ -57,7 +57,7 @@ class MyBuddy extends Component
         let course = this.state.classList[index];
 
         this.setState({ ...this.state, index: index, stu_loaded: false, bud_loaded: false });
-        this.props.fetch_and_filter(course.class_name, course.buddy_list, course.unlike_list);
+        this.props.fetch_and_filter(course.class_name, course.buddy_list, course.unlike_list, this.state.user._id || this.state.user.id);
         this.props.get_buddies(course.buddy_list);
     }
 
@@ -138,10 +138,11 @@ class MyBuddy extends Component
                 {!this.state.stu_loaded ? <h1>Loading...</h1> : 
                 <div className='col s12 m7 cardHolder'>
                     <SwipeDeck 
-                        studentInfo={this.state.studentList} 
+                        studentInfo={this.props.studentList} 
                         userId={this.state.user.id || this.state.user._id} 
                         className={this.state.classList[this.state.index].class_name} 
                         likeOrUnlike={this.likeOrUnlike}
+                        reload={this.reload}
                     />
                 </div>}
             </div>

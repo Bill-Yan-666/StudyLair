@@ -5,6 +5,11 @@ import { string, number } from 'prop-types';
 
 function SwipeCard({ index, x, y, scale, bind, student })
 {
+    if (!student)
+    {
+        return null;
+    }
+
     // Pull out the relevant information inside student
     const { name, major, gradYear, bio, photo } = student;
 

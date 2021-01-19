@@ -28,23 +28,20 @@ const from = (index) =>
     scale: 1.5,
 });
 
-// Define the function handle for requesting new stack of student info
-const reload = () => 
-{
-    console.log('Reloading the stack');
-}
-
 // Student Info contains all the students that are not in the buddy list
 // nor in the unlike list, when the deck is empty, the function will
 // make an api call to server to update the Student Info passed into here
 // so the deck will refresh
-function SwipeDeck({ studentInfo, userId, className, likeOrUnlike })
+function SwipeDeck({ studentInfo, userId, className, likeOrUnlike, })
 {
+    // Define the stack of cards
+    const [cards, setCards] = useState(studentInfo);
+
     // Define a stack for the swiped cards
     const [swiped] = useState(() => new Set());
 
     // Define the springs for dynamic effects
-    const [props, setProps] = useSprings(studentInfo.length, (index) => ({...to(index), from: from(index)}));
+    const [props, setProps] = useSprings(cards.length, (index) => ({...to(index), from: from(index)}));
 
     // Bind the detector to trace user actions
     const bind = useDrag(({ args: [index], down, movement: [delX, delY], swipe: [swipeX] }) => 
@@ -54,8 +51,8 @@ function SwipeDeck({ studentInfo, userId, className, likeOrUnlike })
         if (!down && swipeX !== 0)
         {
             swiped.add(index);
-            likeOrUnlike(userId, studentInfo[index], swipeX, className);
-            console.log(swiped.length + ' ' + studentInfo.length);
+            likeOrUnlike(userId, cards[index], swipeX, className);
+            console.log(swiped.size + ' ' + cards.length);
         }
 
         // Set the target transition based on the user gesture
@@ -84,13 +81,18 @@ function SwipeDeck({ studentInfo, userId, className, likeOrUnlike })
         
 
         // If the stack is card stack is empty, make api call to request new stack
-        if (swiped.length === studentInfo.length)
+        if (swiped.size === cards.length)
         {
-            reload();
+            swiped.clear();
+            setProps((item) => ({...to(item), delay: 500,}));
+
+            // Remove the item just swiped
+            delete studentInfo[0];
+            setCards(studentInfo);
         }
     });
     
-    return props.map(({ x, y, scale }, index) => (<SwipeCard key={index} index={index} x={x} y={y} scale={scale} student={studentInfo[index]} bind={bind}/>));
+    return props.map(({ x, y, scale }, index) => (<SwipeCard key={index} index={index} x={x} y={y} scale={scale} student={cards[index]} bind={bind}/>));
 };
 
 
