@@ -13,8 +13,10 @@ class MyBuddy extends Component
     constructor(props)
     {
         super(props);
+        const emptyStudent = { name:'', major:'', gender:'', gradYear:'', email:'', classList:[], availability:[], photo:'' };
         this.state = 
-        { 
+        {
+            student: emptyStudent, 
             classList: props.classList, 
             index: 0, 
             user: props.user, 
@@ -53,6 +55,8 @@ class MyBuddy extends Component
 
     flip = (direction) => 
     {
+        this.popUpControl(false);
+
         let index = this.state.index + direction;
         let course = this.state.classList[index];
 
@@ -80,6 +84,45 @@ class MyBuddy extends Component
         }
     }
 
+    setBuddy = (buddy) =>
+    {
+        this.setState({ ...this.state, student: buddy });
+        this.popUpControl(true);
+    }
+
+    timeMapper = (time) =>
+    {
+        let result = '';
+        result += time.day + ':  ';
+
+        if (time.start % 2)
+        {
+            result += Math.floor(time.start / 2) + ':30 to ';
+        }
+        else
+        {
+            result += time.start / 2 + ':00 to ';
+        }
+
+        if (time.end % 2)
+        {
+            result += Math.floor(time.end / 2) + ':30 ';
+        }
+        else
+        {
+            result += time.end / 2 + ':00 ';
+        }
+
+        return result;
+    }
+
+    popUpControl = (show) =>
+    {
+        const pop = document.getElementById('DetailPopUp');
+
+        pop.style.display = show ? 'block' : 'none';
+    }
+
     render()
     {
         const index = this.state.index;
@@ -87,6 +130,40 @@ class MyBuddy extends Component
 
         return (
             <div className='row'>
+                {/* Pop-Up for viewing buddy profile */}
+                <div id='DetailPopUp'>
+                    {/* Button */}
+                    <button className="btn-floating btn-large red" style={{ marginTop: "-2%", left: "97%" }} onClick={(e) => this.popUpControl(false)}>
+                        <i className='material-icons large'>close</i>
+                    </button>
+
+                    <div className='row' style={{ width: '90%' }}>
+                        {/* Image */}
+                        <div className='col s12 m5'>
+                            <img src={this.state.student.photo ? this.state.student.photo : 'https://i.pinimg.com/736x/e9/38/3c/e9383c5c660d865b0ff5359a477e2507.jpg'} alt='' style={{ width: '100%', marginTop: '25%', borderRadius: '25%' }} />
+                        </div>
+
+                        {/* Personal details */}
+                        <div className='col s12 m7' style={{ fontSize: '24px', paddingLeft: '5%' }}>
+                            <h2 style={{ textAlign: 'center' }}>{this.state.student.name}</h2>
+                            <p><b>Gender: </b>{this.state.student.gender}</p>
+                            <p><b>Major: </b>{this.state.student.major}</p>
+                            <p><b>Graduating in: </b>{this.state.student.gradYear}</p>
+                            <p><b>Email: </b>{this.state.student.email}</p>
+                            <p><b>Courses Enrolled: </b>{this.state.student.classList.map((combo) => combo.class_name + ', ')}</p>
+                        </div>
+
+                        {/* Availabilities */}
+                        <div id='Chips' className='col s12' style={{ fontSize: '24px' }}>
+                            <b>Availabilities: </b>
+                            {this.state.student.availability.map((time) =>
+                            (
+                                <div className='chip' key={time.day + time.start + time.end}>{this.timeMapper(time)}</div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
                 {/* Course Switch Bar */}
                 <div className='col s12' style={{ textAlign: 'center', marginTop: '2%' }}>
                     <div className='col s3 m2'>
@@ -114,13 +191,13 @@ class MyBuddy extends Component
                 
                 {/* Current Buddies */}
                 <div className='col s12 m5'>
-                    <div className='col s12'><h6>My Buddies</h6><div className='divider'></div></div>
+                    <div className='col s12'><h5>My Buddies</h5><div className='divider'></div></div>
 
                     <ul className='collection col s12' style={{ border: 'none', }}>
                         {!this.state.buddyList ? '' : this.state.buddyList.map((item) => 
                         (
                             <li key={item._id} className='collection-item avatar' style={{ paddingLeft: '90px', borderRadius: '20px', marginBottom: '2%', }}>
-                                <button style={{ width: '100%', border: 'none', padding: '0', backgroundColor: 'transparent', textAlign: 'inherit', }} onClick={(e) => console.log('Hi')}>
+                                <button style={{ width: '100%', border: 'none', padding: '0', backgroundColor: 'transparent', textAlign: 'inherit', }} onClick={(e) => this.setBuddy(item)}>
                                     <img className='circle' src={item.photo} alt="" style={{ height: '60px', width: '60px', borderRadius: '25%', }} />
                                     <span style={{ fontSize: '20px',  lineHeight: '35px', }}>{item.name}</span>
                                     <p>{item.major}</p>

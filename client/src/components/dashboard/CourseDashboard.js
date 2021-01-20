@@ -13,7 +13,7 @@ class CourseDashboard extends Component
     constructor(props)
     {
         super(props);
-        const emptyStudent = { name:'', major:'', gender:'', gradYear:'', email:'', classList:[], photo:'' };
+        const emptyStudent = { name:'', major:'', gender:'', gradYear:'', email:'', classList:[], availability:[], photo:'' };
         this.state = { course: props.course, studentList: [{}], loaded: false, student: emptyStudent };
         props.fetch_course_info(props.course);
     }
@@ -22,7 +22,7 @@ class CourseDashboard extends Component
     {
         if (nextProps.course !== currentState.course)
         {
-            const emptyStudent = { name:'', major:'', gender:'', gradYear:'', email:'', classList:[] };
+            const emptyStudent = { name:'', major:'', gender:'', gradYear:'', email:'', classList:[], availability:[], photo:'' };
             return { course: nextProps.course, studentList: [{}], loaded: false, student: emptyStudent };
         }
         else if (nextProps.loaded !== currentState.loaded)
@@ -44,6 +44,32 @@ class CourseDashboard extends Component
         const visible = pop.style.display === 'block';
 
         pop.style.display = visible ? 'none' : 'block';
+    }
+
+    timeMapper = (time) =>
+    {
+        let result = '';
+        result += time.day + ':  ';
+
+        if (time.start % 2)
+        {
+            result += Math.floor(time.start / 2) + ':30 to ';
+        }
+        else
+        {
+            result += time.start / 2 + ':00 to ';
+        }
+
+        if (time.end % 2)
+        {
+            result += Math.floor(time.end / 2) + ':30 ';
+        }
+        else
+        {
+            result += time.end / 2 + ':00 ';
+        }
+
+        return result;
     }
 
     render()
@@ -70,7 +96,16 @@ class CourseDashboard extends Component
                         <p><b>Major: </b>{this.state.student.major}</p>
                         <p><b>Graduating in: </b>{this.state.student.gradYear}</p>
                         <p><b>Email: </b>{this.state.student.email}</p>
-                        <p><b>Courses Enrolled: </b>{this.state.student.classList.map((combo) => combo[0] + ', ')}</p>
+                        <p><b>Courses Enrolled: </b>{this.state.student.classList.map((combo) => combo.class_name + ', ')}</p>
+                    </div>
+
+                    {/* Availabilities */}
+                    <div id='Chips' className='col s12' style={{ fontSize: '24px' }}>
+                        <b>Availabilities: </b>
+                        {this.state.student.availability.map((time) =>
+                        (
+                            <div className='chip' key={time.day + time.start + time.end}>{this.timeMapper(time)}</div>
+                        ))}
                     </div>
                 </div>
             </div>

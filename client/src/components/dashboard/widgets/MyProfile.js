@@ -344,7 +344,7 @@ class MyProfile extends Component
                 <div id='Chips' style={{ width: '80%', marginLeft: '10%'}}>
                     <h6>Availabilities: &nbsp;</h6> &nbsp; &nbsp;
                     {!this.state.availability ? '' : this.state.availability.map((time) =>
-                        <div className='chip' key={time.day + time.start}>
+                        <div className='chip' key={time.day + time.start + time.end}>
                             {this.timeMapper(time)}
                             <button className='btn-floating' onClick={() => this.timeRemover(time)}>
                                 <i className='material-icons' style={{ lineHeight: '32px'}}>close</i>
