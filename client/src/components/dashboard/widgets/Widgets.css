@@ -79,3 +79,23 @@
     margin-right: -10px;
     margin-bottom: 5px;
 }
+
+@keyframes fade_out
+{
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
+.swipe_action
+{
+    position: absolute;
+    opacity: 0;
+    top: 650px;
+    color: aliceblue;
+    text-align: center;
+    font-family: cursive;
+    font-size: 24px;
+    animation-name: fade_out;
+    animation-duration: 4s;
+    animation-delay: 2s;
+}

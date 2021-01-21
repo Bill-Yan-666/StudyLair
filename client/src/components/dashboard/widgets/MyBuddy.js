@@ -123,6 +123,18 @@ class MyBuddy extends Component
         pop.style.display = show ? 'block' : 'none';
     }
 
+    updateStatus = (like) =>
+    {
+        const message = document.getElementsByClassName('swipe_action')[0];
+
+        // Set the display text
+        message.innerHTML = like ? 'Liked' : 'Disliked';
+
+        // Remove and add the class name to replay the css animation
+        message.classList.remove('swipe_action');
+        setTimeout(() => message.classList.add('swipe_action'), 10);
+    }
+
     render()
     {
         const index = this.state.index;
@@ -219,9 +231,14 @@ class MyBuddy extends Component
                         userId={this.state.user.id || this.state.user._id} 
                         className={this.state.classList[this.state.index].class_name} 
                         likeOrUnlike={this.likeOrUnlike}
-                        reload={this.reload}
+                        updateStatus={this.updateStatus}
                     />
                 </div>}
+
+                 {/* Status box for reporting user action */}
+                 <div className='col s12 m7 offset-m5 swipe_action'>
+                    This will hold the text for displaying status of action
+                </div>
             </div>
         )
     }

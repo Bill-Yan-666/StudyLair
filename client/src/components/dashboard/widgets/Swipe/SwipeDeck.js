@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSprings } from 'react-spring';
+import { update, useSprings } from 'react-spring';
 import { useDrag } from 'react-use-gesture';
 
 import SwipeCard from './SwipeCard.js';
@@ -32,7 +32,7 @@ const from = (index) =>
 // nor in the unlike list, when the deck is empty, the function will
 // make an api call to server to update the Student Info passed into here
 // so the deck will refresh
-function SwipeDeck({ studentInfo, userId, className, likeOrUnlike, })
+function SwipeDeck({ studentInfo, userId, className, likeOrUnlike, updateStatus })
 {
     // Define the stack of cards
     const [cards, setCards] = useState(studentInfo);
@@ -52,7 +52,7 @@ function SwipeDeck({ studentInfo, userId, className, likeOrUnlike, })
         {
             swiped.add(index);
             likeOrUnlike(userId, cards[index], swipeX, className);
-            console.log(swiped.size + ' ' + cards.length);
+            updateStatus(swipeX > 0);
         }
 
         // Set the target transition based on the user gesture
