@@ -15,17 +15,14 @@ class MyProfile extends Component
         const userRef = props.user;
         this.state = 
         {
-            name: userRef.name,
-            gender: userRef.gender,
-            major: userRef.major,
-            gradYear: userRef.gradYear,
-            email: userRef.email,
-            bio: userRef.bio,
-            photo: userRef.photo,
+            name: userRef.name, gender: userRef.gender, major: userRef.major, gradYear: userRef.gradYear,
+            email: userRef.email, bio: userRef.bio, photo: userRef.photo,
+
+            Snapchat: userRef.Snapchat, Instagram: userRef.Instagram, Facebook: userRef.Facebook, Wechat: userRef.Wechat,
+
             availability: userRef.availability,
-            day: 'Monday',
-            start: 0,
-            end: 0,
+            day: 'Monday', start: 0, end: 0,
+
             input: false,
         }
     }
@@ -38,13 +35,11 @@ class MyProfile extends Component
         {
             return {
                 ...currentState,
-                name: userRef.name,
-                gender: userRef.gender,
-                major: userRef.major,
-                gradYear: userRef.gradYear,
-                email: userRef.email,
-                bio: userRef.bio,
-                photo: userRef.photo,
+                name: userRef.name, gender: userRef.gender, major: userRef.major, gradYear: userRef.gradYear,
+                email: userRef.email, bio: userRef.bio, photo: userRef.photo,
+
+                Snapchat: userRef.Snapchat, Instagram: userRef.Instagram, Facebook: userRef.Facebook, Wechat: userRef.Wechat,
+
                 availability: userRef.availability,
             };
         }
@@ -265,7 +260,7 @@ class MyProfile extends Component
                 <div className='row' style={{ marginTop:'5%' }}>
                     {/* Photo section */}
                     <div className='col s12 m5 file-field'>
-                        <div className='btn-floating' style={{ position:'relative', width:'70%', paddingTop:'70%', marginTop:'-10%', marginLeft:'15%' }}>
+                        <div className='btn-floating' style={{ position:'relative', width:'70%', paddingTop:'70%', marginTop:'4%', marginLeft:'15%' }}>
                             <img src={this.state.photo ? this.state.photo : 'https://i.pinimg.com/236x/d7/bf/13/d7bf13137b64840c0e7b2bae17ed6ed4.jpg'} 
                                 style={{ position:'absolute', top:'0', right:'0', bottom:'0', left:'0', width:'100%' }} alt='' />
                             <FileBase type='file' multiple={false} onDone={({ base64 }) => this.setState({ ...this.state, photo: base64 })} />
@@ -312,6 +307,31 @@ class MyProfile extends Component
                         <div className='input-field col s12 m12 l12'>
                             <input id='bio' type='text' value={this.state.bio || ''} onChange={this.onChange}></input>
                             <label htmlFor='bio'>Biography about Yourself</label>
+                        </div>
+
+                        {/* Social Medias */}
+                        <div className='input-field col s12 m6 l3'>
+                            <img className='prefix' src='http://blog.mobiversal.com/wp-content/uploads/2016/06/snapchat-icon-1.png' alt='' style={{ padding: '5px' }} />
+                            <input id='Snapchat' type='text' value={this.state.Snapchat || ''} onChange={this.onChange}></input>
+                            <label htmlFor='Snapchat'>Snapchat</label>
+                        </div>
+
+                        <div className='input-field col s12 m6 l3'>
+                            <img className='prefix' src='https://cdn.pixelprivacy.com/wp-content/uploads/2018/02/Instagram-Icon.png' alt='' style={{ padding: '5px' }} />
+                            <input id='Instagram' type='text' value={this.state.Instagram || ''} onChange={this.onChange}></input>
+                            <label htmlFor='Instagram'>Instagram</label>
+                        </div>
+
+                        <div className='input-field col s12 m6 l3'>
+                            <img className='prefix' src='https://coindoo.com/wp-content/uploads/2019/01/facebook-icon.png' alt='' style={{ padding: '5px' }} />
+                            <input id='Facebook' type='text' value={this.state.Facebook || ''} onChange={this.onChange}></input>
+                            <label htmlFor='Facebook'>Facebook</label>
+                        </div>
+
+                        <div className='input-field col s12 m6 l3'>
+                            <img className='prefix' src='https://logos-download.com/wp-content/uploads/2017/01/WeChat_logo_icon.png' alt='' style={{ padding: '5px' }} />
+                            <input id='Wechat' type='text' value={this.state.Wechat || ''} onChange={this.onChange}></input>
+                            <label htmlFor='Wechat'>Wechat</label>
                         </div>
 
                         {/* Add Availability */}

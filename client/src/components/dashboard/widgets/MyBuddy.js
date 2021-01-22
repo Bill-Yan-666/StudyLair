@@ -165,8 +165,32 @@ class MyBuddy extends Component
                             <p><b>Courses Enrolled: </b>{this.state.student.classList.map((combo) => combo.class_name + ', ')}</p>
                         </div>
 
+                        {/* Social media */}
+                        <div className='col s12' style={{ fontSize: '24px', marginTop: '15px' }}>
+                            <b>Social Medias:</b><br/>
+                            <div className='col s12 m6 l3' style={{ display: 'flex', alignContent: 'center' }}>
+                                <img src='http://blog.mobiversal.com/wp-content/uploads/2016/06/snapchat-icon-1.png' alt='Snapchat' style={{ width: '3rem', padding: '5px' }} />
+                                {this.state.student.Snapchat}
+                            </div>
+                            
+                            <div className='col s12 m6 l3' style={{ display: 'flex', alignContent: 'center' }}>
+                                <img src='https://cdn.pixelprivacy.com/wp-content/uploads/2018/02/Instagram-Icon.png' alt='Instagram' style={{ width: '3rem', padding: '5px' }} />
+                                {this.state.student.Instagram}
+                            </div>
+
+                            <div className='col s12 m6 l3' style={{ display: 'flex', alignContent: 'center' }}>
+                                <img src='https://coindoo.com/wp-content/uploads/2019/01/facebook-icon.png' alt='Facebook' style={{ width: '3rem', padding: '5px' }} />
+                                {this.state.student.Facebook}
+                            </div>
+
+                            <div className='col s12 m6 l3' style={{ display: 'flex', alignContent: 'center' }}>
+                                <img src='https://image.flaticon.com/icons/png/512/889/889153.png' alt='Wechat' style={{ width: '3rem', padding: '5px' }} />
+                                {this.state.student.Wechat}
+                            </div>
+                        </div>
+
                         {/* Availabilities */}
-                        <div id='Chips' className='col s12' style={{ fontSize: '24px' }}>
+                        <div id='Chips' className='col s12' style={{ fontSize: '24px', marginTop: '15px' }}>
                             <b>Availabilities: </b>
                             {this.state.student.availability.map((time) =>
                             (
