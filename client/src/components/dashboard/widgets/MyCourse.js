@@ -70,7 +70,7 @@ class MyCourse extends Component
                             <button className='secondary-content btn-floating btn-large' style={{ marginTop:'-40px' }} onClick={() => this.removeCourse(course)}>
                                 <i className='material-icons large red'>delete</i>
                             </button>
-                            <div style={{ marginLeft: "10%" }}>Instructor: {course[1]}</div>
+                            <div style={{ marginLeft: "10%" }}>Instructor: N/A</div>
                         </li>
                     ))}
                 </ul>

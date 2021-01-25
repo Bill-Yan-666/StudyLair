@@ -46,6 +46,11 @@ class MyProfile extends Component
         return null;
     }
 
+    componentDidMount()
+    {
+        this.componentDidUpdate();
+    }
+
     componentDidUpdate()
     {
         // Check if this update comes from user input

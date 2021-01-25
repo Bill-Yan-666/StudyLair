@@ -34,6 +34,7 @@ if (localStorage.jwtToken) {
   // data to bypass the verification first
   store.dispatch({ type: SET_CURRENT_USER, payload: decoded, });
   store.dispatch(get_and_set_user(decoded));
+  store.dispatch(get_and_set_user(decoded));
 
   // Check for expired token
   const currentTime = Date.now() / 1000; // to get in milliseconds
